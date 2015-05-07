@@ -1,0 +1,52 @@
+{
+    "id": "/hue",
+    "container": {
+        "type": "DOCKER",
+        "docker": {
+            "image": "mesosphere/hue:5-6-3.35",
+            "privileged": true,
+            "network": "BRIDGE",
+            "portMappings": [
+                {
+                    "containerPort": 8000,
+                    "hostPort": 0,
+                    "protocol": "tcp"
+                },
+                {
+                    "containerPort": 14000,
+                    "hostPort": 0,
+                    "protocol": "tcp"
+                }
+            ]
+        },
+        "volumes": [
+            {
+                "containerPath": "/opt/mesosphere/",
+                "hostPath": "/opt/mesosphere/",
+                "mode": "RO"
+            },{
+                "containerPath": "/etc/hadoop/conf/",
+                "hostPath": "/opt/mesosphere/etc/hadoop/",
+                "mode": "RO"
+            }
+        ]
+    },
+    "uris": [
+        "https://s3.amazonaws.com/downloads.mesosphere.io/hdfs/hue/hue.ini",
+        "https://s3.amazonaws.com/downloads.mesosphere.io/hdfs/hue/httpfs-site.xml"
+    ],
+    "cmd": "export PATH=/opt/mesosphere/bin:$PATH && \\cp -f /etc/hadoop/conf/*-site.xml /etc/hadoop-httpfs/conf/ && \\cp -f $MESOS_SANDBOX/httpfs-site.xml /etc/hadoop-httpfs/conf/ && service hadoop-httpfs start; \\cp -f $MESOS_SANDBOX/hue.ini /etc/hue/conf/hue.ini && /usr/lib/hue/build/env/bin/hue runserver 0.0.0.0:8000",
+    "ports": [0, 0],
+    "cpus": 1,
+    "mem": 1024,
+    "healthChecks": [
+    {
+      "protocol": "HTTP",
+      "portIndex": 0,
+      "path": "/",
+      "gracePeriodSeconds": 600,
+      "intervalSeconds": 20,
+      "maxConsecutiveFailures": 3
+    }
+  ]
+}
