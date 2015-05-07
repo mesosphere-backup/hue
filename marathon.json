@@ -3,7 +3,7 @@
     "container": {
         "type": "DOCKER",
         "docker": {
-            "image": "mesosphere/hue:5-6-3.35",
+            "image": "mesosphere/hue",
             "privileged": true,
             "network": "BRIDGE",
             "portMappings": [
